@@ -1,0 +1,22 @@
+
+dn: cn=config
+changetype: modify
+replace: olcTLSCipherSuite
+olcTLSCipherSuite: SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
+-
+replace: olcTLSVerifyClient
+olcTLSVerifyClient: never
+
+# replace: olcTLSCACertificateFile
+# olcTLSCACertificateFile: {{ LDAP_TLS_CA_CRT_PATH }}
+# -
+# replace: olcTLSCertificateFile
+# olcTLSCertificateFile: {{ LDAP_TLS_CRT_PATH }}
+# -
+# replace: olcTLSCertificateKeyFile
+# olcTLSCertificateKeyFile: {{ LDAP_TLS_KEY_PATH }}
+# -
+# replace: olcTLSDHParamFile
+# olcTLSDHParamFile: {{ LDAP_TLS_DH_PARAM_PATH }}
+# -
+# SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
