@@ -1,0 +1,21 @@
+# dn: cn=module{0},cn=config
+# changetype: modify
+# add: olcModuleLoad
+# olcModuleLoad: ppolicy.la
+
+# dn: cn=module{0},cn=config
+# objectClass: olcModuleList
+# cn: module{0}
+# olcModuleLoad: ppolicy
+
+dn: ou=pwpolicy,dc=jenkins-ci,dc=org
+objectClass: organizationalUnit
+objectClass: top
+ou: pwpolicy
+
+# dn: olcOverlay=ppolicy,olcDatabase={1}hdb,cn=config
+# objectClass: olcOverlayConfig
+# objectClass: olcPPolicyConfig
+# olcOverlay: ppolicy
+# olcPPolicyDefault: cn=default,ou=pwpolicy,dc=jenkins-ci,dc=org
+# olcPPolicyHashCleartext: TRUE
