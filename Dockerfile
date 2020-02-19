@@ -8,12 +8,6 @@ RUN apt-get -y update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ldap-utils
 
 ADD slapd.sh /etc/service/slapd/run
-ADD data.ldif /tmp/data.ldif
-ADD config.ldif /tmp/config.ldif
-ADD pwpolicyoverlay.ldif /tmp/pwpolicyoverlay.ldif
-ADD pwpolicyoverlay1.ldif /tmp/pwpolicyoverlay1.ldif
-ADD pwpolicyoverlay2.ldif /tmp/pwpolicyoverlay2.ldif
-ADD ppolicy_default.ldif /tmp/ppolicy_default.ldif
 ADD ldif /tmp/ldif
 
 RUN chmod -R 755 /etc/service/slapd/run
@@ -35,19 +29,10 @@ EXPOSE 389
 # RUN ln -s /usr/local/lib/run/ldapi /var/run/slapd/ldapi
 
 RUN /etc/service/slapd/run & sleep 3; \
-    ldapadd -H ldap:/// -x -D cn=admin,dc=jenkins-ci,dc=org -w s3cr3t < /tmp/data.ldif
+    ldapadd -H ldap:/// -x -D cn=admin,dc=jenkins-ci,dc=org -w s3cr3t -f /tmp/ldif/data.ldif
 
 RUN /etc/service/slapd/run & sleep 3; \
-    ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/config.ldif
-
-# RUN /etc/service/slapd/run & sleep 3; \
-#     ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/pwpolicyoverlay.ldif
-
-# RUN /etc/service/slapd/run & sleep 3; \
-#     ldapadd -Y EXTERNAL -H ldapi:/// -f /tmp/pwpolicyoverlay2.ldif
-
-# RUN /etc/service/slapd/run & sleep 3; \
-#     ldapadd -H ldap:/// -x -D cn=admin,dc=jenkins-ci,dc=org -w s3cr3t < /tmp/pwpolicyoverlay1.ldif
+    ldapmodify -Y EXTERNAL -H ldapi:/// -f /tmp/ldif/config.ldif
 
 RUN /etc/service/slapd/run & sleep 3; \
     ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/ppolicy.ldif

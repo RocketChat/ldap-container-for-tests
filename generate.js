@@ -92,9 +92,9 @@ street: 1CVSDrive
 uid: ${uid}`;
 
 	if (data.length > 10000000) {
-		fs.appendFileSync('data.ldif', data);
+		fs.appendFileSync('ldif/data.ldif', data);
 		data = '';
 	}
 }
 
-fs.appendFileSync('data.ldif', data);
+fs.appendFileSync('ldif/ata.ldif', data);
