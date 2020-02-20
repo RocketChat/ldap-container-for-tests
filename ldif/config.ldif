@@ -20,3 +20,13 @@ olcTLSVerifyClient: never
 # olcTLSDHParamFile: {{ LDAP_TLS_DH_PARAM_PATH }}
 # -
 # SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
+
+dn: olcDatabase={0}config,cn=config
+changetype: modify
+add: olcRootDN
+olcRootDN: cn=admin,cn=config
+
+dn: olcDatabase={0}config,cn=config
+changetype: modify
+add: olcRootPW
+olcRootPW: rootpassword

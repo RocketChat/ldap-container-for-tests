@@ -1,0 +1,5 @@
+dn: ou=Policies,dc=rocket,dc=chat
+objectClass: top
+objectClass: organizationalUnit
+ou: Policies
+description: policies come here

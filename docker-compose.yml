@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  ldap:
+    build: .
+    ports:
+      - 636:636
+      - 389:389
