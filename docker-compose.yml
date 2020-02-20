@@ -2,12 +2,7 @@ version: '2'
 
 services:
   ldap:
-    # image: rocketchat/rocket.chat:latest
     build: .
-    # volumes:
-    #   - ./uploads:/app/uploads
-    # environment:
-    #   - PORT=3000
     ports:
       - 636:636
       - 389:389

@@ -1,4 +1,4 @@
-dn: cn=DefaultPPolicy,ou=Policies,dc=jenkins-ci,dc=org
+dn: cn=DefaultPPolicy,ou=Policies,dc=rocket,dc=chat
 cn: DefaultPPolicy
 objectClass: pwdPolicy
 objectClass: device

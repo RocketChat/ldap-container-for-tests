@@ -2,4 +2,4 @@ dn: olcOverlay={0}ppolicy,olcDatabase={1}hdb,cn=config
 objectClass: olcOverlayConfig
 objectClass: olcPPolicyConfig
 olcOverlay: {0}ppolicy
-olcPPolicyDefault: cn=DefaultPPolicy,ou=Policies,dc=jenkins-ci,dc=org
+olcPPolicyDefault: cn=DefaultPPolicy,ou=Policies,dc=rocket,dc=chat

@@ -1,4 +1,4 @@
-dn: ou=Policies,dc=jenkins-ci,dc=org
+dn: ou=Policies,dc=rocket,dc=chat
 objectClass: top
 objectClass: organizationalUnit
 ou: Policies

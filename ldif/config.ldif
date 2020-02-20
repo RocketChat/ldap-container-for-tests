@@ -29,13 +29,4 @@ olcRootDN: cn=admin,cn=config
 dn: olcDatabase={0}config,cn=config
 changetype: modify
 add: olcRootPW
-olcRootPW: s3cr3t
-
-# dn: olcOverlay=ppolicy,olcDatabase={1}bdb,cn=config
-# objectClass: olcOverlayConfig
-# objectClass: olcPPolicyConfig
-# olcOverlay: ppolicy
-# olcPPolicyDefault: cn=passwordDefault,ou=Policies,dc=mydomain,dc=tld
-# olcPPolicyHashCleartext: FALSE
-# olcPPolicyUseLockout: FALSE
-# olcPPolicyForwardUpdates: FALSE
+olcRootPW: rootpassword

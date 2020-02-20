@@ -1,94 +1,96 @@
 const fs = require('fs');
 
-fs.writeFileSync('data.ldif', `
+// dn: cn=${cn},ou=people,dc=rocket,dc=chat
+// objectClass: inetOrgPerson
+// cn: ${cn}
+// mail: ${cn}@rocket.chat
+// givenName: ${givenName}
+// sn: ${sn}
+// userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
+// description: ISARCHITECT-TECHNOLOGY
+// l: Woonsocket
+// postalCode: 00000
+// st: RI
+// street: 1CVSDrive
+// uid: ${uid}`;
+
+
+fs.writeFileSync('ldif/data.ldif', `
 #
 # Dummy user database for testing
 #
-# User 'kohsuke' is admin, user 'alice' is a regular user.
+# User 'ldapadmin' is admin, user 'ldapuser' is a regular user.
 # Both has the password 'password'
 #
 
-#dn: dc=jenkins-ci,dc=org
+#dn: dc=rocket,dc=chat
 #objectClass: top
 #objectClass: dcObject
 #objectClass: organization
-#o: Jenkins users
-#dc: Jenkins-Ci
-#description: Jenkins users
+#o: RocketChat users
+#dc: RocketChat
+#description: RocketChat users
 
-#dn: cn=admin,dc=jenkins-ci,dc=org
+#dn: cn=admin,dc=rocket,dc=chat
 #objectClass: simpleSecurityObject
 #objectClass: organizationalRole
 #cn: admin
 #description: LDAP administrator
 #userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: ou=people,dc=jenkins-ci,dc=org
+dn: ou=people,dc=rocket,dc=chat
 objectClass: organizationalUnit
 ou: people
 
-dn: ou=groups,dc=jenkins-ci,dc=org
+dn: ou=groups,dc=rocket,dc=chat
 objectClass: organizationalUnit
 ou: groups
 
-dn: cn=admins,ou=groups,dc=jenkins-ci,dc=org
+dn: cn=admins,ou=groups,dc=rocket,dc=chat
 objectClass: groupOfNames
 cn: admins
 description: people with infrastructure admin access
-member: cn=kohsuke,ou=people,dc=jenkins-ci,dc=org
+member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
 
-dn: cn=all,ou=groups,dc=jenkins-ci,dc=org
+dn: cn=all,ou=groups,dc=rocket,dc=chat
 objectClass: groupOfNames
 cn: all
-member: cn=kohsuke,ou=people,dc=jenkins-ci,dc=org
-member: cn=kohsuke2,ou=people,dc=jenkins-ci,dc=org
+member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
 
-dn: cn=kohsuke,ou=people,dc=jenkins-ci,dc=org
+dn: cn=ldapadmin,ou=people,dc=rocket,dc=chat
 objectClass: inetOrgPerson
-cn: kohsuke
-mail: kk@kohsuke.org
-givenName: Kohsuke
-employeeNumber: kohsuke
-preferredLanguage: yyy
-sn: Kawaguchi
+cn: ldapadmin
+mail: kk@ldapadmin.org
+givenName: LDAP Admin
+sn: Admin
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: cn=alice,ou=people,dc=jenkins-ci,dc=org
+dn: cn=ldapuser,ou=people,dc=rocket,dc=chat
 objectClass: inetOrgPerson
-cn: alice
-mail: bob@jenkins-ci.org
-givenName: Alice
-sn: Ashley
+cn: ldapuser
+mail: ldapuser@rocket.chat
+givenName: LDAP User
+sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 `);
 
 let data = '';
 
-for (var index = 0; index < 800; index++) {
-	const cn = `alice-${index}`;
-	const givenName = `Alice-${index}`;
-	const sn = 'Ashley';
+for (var index = 0; index < 10; index++) {
+	const cn = `ldapuser-${index}`;
+	const givenName = `LDAP User ${index}`;
+	const sn = 'User';
 	const uid = cn;
 
 	data += `
 
-dn: cn=${cn},ou=people,dc=jenkins-ci,dc=org
+dn: cn=${cn},ou=people,dc=rocket,dc=chat
 objectClass: inetOrgPerson
 cn: ${cn}
-mail: ${cn}@jenkins-ci.org
+mail: ${cn}@rocket.chat
 givenName: ${givenName}
 sn: ${sn}
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
-#cvsbusunit: HEADQ
-#cvsempstatus: A
-#cvsjobcode: 111111
-#cvsmanagerlevel: 1
-#cvssupervisor: 1111110
-description: ISARCHITECT-TECHNOLOGY
-l: Woonsocket
-postalCode: 00000
-st: RI
-street: 1CVSDrive
 uid: ${uid}`;
 
 	if (data.length > 10000000) {
@@ -97,4 +99,4 @@ uid: ${uid}`;
 	}
 }
 
-fs.appendFileSync('ldif/ata.ldif', data);
+fs.appendFileSync('ldif/data.ldif', data);
