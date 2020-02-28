@@ -3,9 +3,6 @@ FROM nickstenning/slapd:previous
 ENV LDAP_ROOTPASS rootpassword
 ENV LDAP_DOMAIN rocket.chat
 ENV LDAP_ORGANISATION MockRocketChat
-# ENV LDAP_TLS_VERIFY_CLIENT=never
-# ENV LDAP_TLS_PROTOCOL_MIN=1.0
-# ENV LDAP_TLS_CIPHER_SUITE=SECURE128:-VERS-SSL3.0:+VERS-TLS1.2
 
 RUN apt-get -y update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y ldap-utils

@@ -1,9 +1,10 @@
 
 dn: cn=config
 changetype: modify
+# Disable TLS 1.1 and 1.2 for tests
 # replace: olcTLSCipherSuite
-# olcTLSCipherSuite: SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
-# -
+# olcTLSCipherSuite: SECURE128:-VERS-SSL3.0:-VERS-TLS1.1:-VERS-TLS1.2
+-
 replace: olcTLSVerifyClient
 olcTLSVerifyClient: never
 -
@@ -18,8 +19,6 @@ olcTLSCertificateKeyFile: /etc/openldap/ssl/slapd.key
 # -
 # replace: olcTLSDHParamFile
 # olcTLSDHParamFile: {{ LDAP_TLS_DH_PARAM_PATH }}
-# -
-# SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
 
 dn: olcDatabase={0}config,cn=config
 changetype: modify
