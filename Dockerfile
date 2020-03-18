@@ -11,15 +11,11 @@ ADD slapd.sh /etc/service/slapd/run
 
 RUN chmod -R 755 /etc/service/slapd/run
 
-# # ADD slapdcert.pem /etc/openldap/ssl/slapdcert.pem
-# # ADD slapdkey.pem /etc/openldap/ssl/slapdkey.pem
-# ADD server.pem /etc/openldap/ssl/server.pem
-# RUN chmod -R 755 /etc/openldap/ssl/ &\
-# # chmod 400 /etc/openldap/ssl/slapdkey.pem &\
-# # chmod 444 /etc/openldap/ssl/slapdcert.pem &\
-# # chown ldap /etc/openldap/ssl/slapdkey.pem &\
-# chmod 400 /etc/openldap/ssl/server.pem &\
-# chown openldap /etc/openldap/ssl/server.pem
+ADD certs/* /etc/openldap/ssl/
+
+RUN chmod -R 755 /etc/openldap/ssl/; \
+    chmod 400 /etc/openldap/ssl/*; \
+    chown openldap /etc/openldap/ssl/*
 
 EXPOSE 636
 EXPOSE 389

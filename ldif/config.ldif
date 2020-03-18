@@ -1,25 +1,24 @@
 
 dn: cn=config
 changetype: modify
-replace: olcTLSCipherSuite
-olcTLSCipherSuite: SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
+# Disable TLS 1.1 and 1.2 for tests
+# replace: olcTLSCipherSuite
+# olcTLSCipherSuite: SECURE128:-VERS-SSL3.0:-VERS-TLS1.1:-VERS-TLS1.2
 -
 replace: olcTLSVerifyClient
 olcTLSVerifyClient: never
-
+-
 # replace: olcTLSCACertificateFile
-# olcTLSCACertificateFile: {{ LDAP_TLS_CA_CRT_PATH }}
+# olcTLSCACertificateFile: /etc/openldap/ssl/slapdCA.pem
 # -
-# replace: olcTLSCertificateFile
-# olcTLSCertificateFile: {{ LDAP_TLS_CRT_PATH }}
-# -
-# replace: olcTLSCertificateKeyFile
-# olcTLSCertificateKeyFile: {{ LDAP_TLS_KEY_PATH }}
+replace: olcTLSCertificateFile
+olcTLSCertificateFile: /etc/openldap/ssl/slapd.crt
+-
+replace: olcTLSCertificateKeyFile
+olcTLSCertificateKeyFile: /etc/openldap/ssl/slapd.key
 # -
 # replace: olcTLSDHParamFile
 # olcTLSDHParamFile: {{ LDAP_TLS_DH_PARAM_PATH }}
-# -
-# SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
 
 dn: olcDatabase={0}config,cn=config
 changetype: modify

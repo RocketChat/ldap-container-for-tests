@@ -3,6 +3,7 @@ version: '2'
 services:
   ldap:
     build: .
+    hostname: ldap.example.org
     ports:
       - 636:636
       - 389:389

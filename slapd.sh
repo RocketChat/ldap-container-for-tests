@@ -38,6 +38,7 @@ EOF
   # echo "logfile         /tmp/slapd.log" >> /usr/share/slapd/slapd.conf
   echo "loglevel        any" >> /usr/share/slapd/slapd.conf
 
+  # NOT NECESSARY FOR SSL
   # # /etc/ldap/ldap.conf
   # # /usr/share/slapd/slapd.conf
   # echo "# Certificate/SSL Section" >> /etc/ldap/ldap.conf
@@ -45,20 +46,20 @@ EOF
   # # echo "TLSCertificateFile /etc/openldap/ssl/slapdcert.pem" >> /etc/ldap/ldap.conf
   # # echo "TLSCertificateKeyFile /etc/openldap/ssl/slapdkey.pem" >> /etc/ldap/ldap.conf
   # # echo "TLSCipherSuite HIGH:MEDIUM:-SSLv2:-SSLv3" >> /etc/ldap/ldap.conf
-  # # echo "TLS_REQCERT allow" >> /etc/ldap/ldap.conf
-  # echo "TLSCACertificateFile /etc/openldap/ssl/server.pem" >> /etc/ldap/ldap.conf
-  # echo "TLSCertificateFile /etc/openldap/ssl/server.pem" >> /etc/ldap/ldap.conf
-  # echo "TLSCertificateKeyFile /etc/openldap/ssl/server.pem" >> /etc/ldap/ldap.conf
+  # echo "TLS_REQCERT allow" >> /etc/ldap/ldap.conf
+  # # echo "TLSCACertificateFile /etc/openldap/ssl/slapdCA.pem" >> /etc/ldap/ldap.conf
+  # echo "TLSCertificateFile /etc/openldap/ssl/slapd.crt" >> /etc/ldap/ldap.conf
+  # echo "TLSCertificateKeyFile /etc/openldap/ssl/slapd.key" >> /etc/ldap/ldap.conf
 
   # echo "# Certificate/SSL Section" >> /usr/share/slapd/slapd.conf
   # # echo "TLSCipherSuite DEFAULT" >> /usr/share/slapd/slapd.conf
   # # echo "TLSCertificateFile /etc/openldap/ssl/slapdcert.pem" >> /usr/share/slapd/slapd.conf
   # # echo "TLSCertificateKeyFile /etc/openldap/ssl/slapdkey.pem" >> /usr/share/slapd/slapd.conf
   # # echo "TLSCipherSuite HIGH:MEDIUM:-SSLv2:-SSLv3" >> /usr/share/slapd/slapd.conf
-  # # echo "TLS_REQCERT allow" >> /usr/share/slapd/slapd.conf
-  # echo "TLSCACertificateFile /etc/openldap/ssl/server.pem" >> /usr/share/slapd/slapd.conf
-  # echo "TLSCertificateFile /etc/openldap/ssl/server.pem" >> /usr/share/slapd/slapd.conf
-  # echo "TLSCertificateKeyFile /etc/openldap/ssl/server.pem" >> /usr/share/slapd/slapd.conf
+  # echo "TLS_REQCERT allow" >> /usr/share/slapd/slapd.conf
+  # # echo "TLSCACertificateFile /etc/openldap/ssl/slapdCA.pem" >> /usr/share/slapd/slapd.conf
+  # echo "TLSCertificateFile /etc/openldap/ssl/slapd.crt" >> /usr/share/slapd/slapd.conf
+  # echo "TLSCertificateKeyFile /etc/openldap/ssl/slapd.key" >> /usr/share/slapd/slapd.conf
 
 
   touch /var/lib/ldap/docker_bootstrapped
