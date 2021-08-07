@@ -5,4 +5,4 @@ of real production data. This is useful as a test fixture.
 
 Passwords for all users are 'password'.
 
-The root password is 'rootpassword'.
+The root password is 'admin'.

@@ -1,8 +1,156 @@
 version: '2'
 
 services:
-  ldap:
-    build: .
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    command: --copy-service --loglevel debug
+    environment:
+      LDAP_LOG_LEVEL: "256"
+      LDAP_ORGANISATION: "Example Inc."
+      LDAP_DOMAIN: "rocket.chat"
+      LDAP_BASE_DN: ""
+      LDAP_ADMIN_PASSWORD: "admin"
+      LDAP_CONFIG_PASSWORD: "config"
+      LDAP_READONLY_USER: "false"
+      #LDAP_READONLY_USER_USERNAME: "readonly"
+      #LDAP_READONLY_USER_PASSWORD: "readonly"
+      LDAP_RFC2307BIS_SCHEMA: "false"
+      LDAP_BACKEND: "mdb"
+      LDAP_TLS: "true"
+      LDAP_TLS_CRT_FILENAME: "ldap.crt"
+      LDAP_TLS_KEY_FILENAME: "ldap.key"
+      LDAP_TLS_DH_PARAM_FILENAME: "dhparam.pem"
+      LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+      LDAP_TLS_ENFORCE: "false"
+      LDAP_TLS_CIPHER_SUITE: "SECURE256:-VERS-SSL3.0"
+      LDAP_TLS_VERIFY_CLIENT: "demand"
+      LDAP_REPLICATION: "false"
+      #LDAP_REPLICATION_CONFIG_SYNCPROV: 'binddn="cn=admin,cn=config" bindmethod=simple credentials="$$LDAP_CONFIG_PASSWORD" searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1 starttls=critical'
+      #LDAP_REPLICATION_DB_SYNCPROV: 'binddn="cn=admin,$$LDAP_BASE_DN" bindmethod=simple credentials="$$LDAP_ADMIN_PASSWORD" searchbase="$$LDAP_BASE_DN" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1 starttls=critical'
+      #LDAP_REPLICATION_HOSTS: "#PYTHON2BASH:['ldap://ldap.example.org','ldap://ldap2.example.org']"
+      KEEP_EXISTING_CONFIG: "false"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+      LDAP_SSL_HELPER_PREFIX: "ldap"
+    tty: true
+    stdin_open: true
+    volumes:
+      - /var/lib/ldap
+      - /etc/ldap/slapd.d
+      - /container/service/slapd/assets/certs/
+      - ./ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom
     ports:
-      - 636:636
-      - 389:389
+      - "389:389"
+      - "636:636"
+    # For replication to work correctly, domainname and hostname must be
+    # set correctly so that "hostname"."domainname" equates to the
+    # fully-qualified domain name for the host.
+    domainname: "rocket.chat"
+    hostname: "ldap-server"
+
+  # phpldapadmin:
+  #   image: osixia/phpldapadmin:latest
+  #   container_name: phpldapadmin
+  #   environment:
+  #     PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+  #     PHPLDAPADMIN_HTTPS: "false"
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - openldap
+
+  rocketchat:
+    image: registry.rocket.chat/rocketchat/rocket.chat:latest
+    command: >
+      bash -c
+        "for i in `seq 1 30`; do
+          node main.js &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 secs...\";
+          sleep 5;
+        done; (exit $$s)"
+    restart: unless-stopped
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      PORT: '3000'
+      ROOT_URL: http://localhost:3000
+      MONGO_URL: mongodb://mongo:27017/rocketchat
+      MONGO_OPLOG_URL: mongodb://mongo:27017/local
+      MAIL_URL: smtp://smtp.email
+      OVERWRITE_SETTING_LDAP_User_Search_Field: cn
+      OVERWRITE_SETTING_LDAP_Sync_User_Avatar: 'false'
+      OVERWRITE_SETTING_LDAP_Sync_User_Data_FieldMap: '{"givenName":"name", "Email":"email"}'
+      OVERWRITE_SETTING_LDAP_Sync_User_Data: 'true'
+      OVERWRITE_SETTING_LDAP_Username_Field: cn
+      OVERWRITE_SETTING_LDAP_Authentication_Password: admin
+      OVERWRITE_SETTING_LDAP_Authentication_UserDN: cn=admin,dc=rocket,dc=chat
+      OVERWRITE_SETTING_LDAP_Authentication: 'true'
+      OVERWRITE_SETTING_LDAP_BaseDN: ou=people,dc=rocket,dc=chat
+      OVERWRITE_SETTING_LDAP_Host: openldap
+      OVERWRITE_SETTING_LDAP_LDAP_Login_Fallback: 'true'
+      OVERWRITE_SETTING_LDAP_Enable: 'true'
+      OVERWRITE_SETTING_Allow_Marketing_Emails: 'false'
+      OVERWRITE_SETTING_Apps_Framework_enabled: 'false'
+      OVERWRITE_SETTING_Statistics_reporting: 'false'
+      OVERWRITE_SETTING_Show_Setup_Wizard: "completed"
+      INITIAL_USER: '{ "_id": "adminrc", "services": { "password": { "bcrypt": "$$2b$$10$$RoP1OQxuwzYgtxmHny/95.WUKc1MVuUv8mlbhluEticaArarcqLWa" }, "email2fa": { "enabled": false }, "emails": [ { "address": "admin@rocket.chat.localhost", "verified": true } ] }, "type": "user", "active": true, "roles": [ "user", "admin" ], "name": "Admin", "username": "rc.admin" }'
+    depends_on:
+      - mongo
+      - openldap
+    ports:
+      - 3000:3000
+    labels:
+      - "traefik.backend=rocketchat"
+      - "traefik.frontend.rule=Host: your.domain.tld"
+
+  mongo:
+    image: mongo:4.0
+    restart: unless-stopped
+    volumes:
+     - ./data/db:/data/db
+     #- ./data/dump:/dump
+    command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1
+    ports:
+      - 27018:27017
+    labels:
+      - "traefik.enable=false"
+
+  # this container's job is just run the command to initialize the replica set.
+  # it will run the command and remove himself (it will not stay running)
+  mongo-init-replica:
+    image: mongo:4.0
+    command: >
+      bash -c
+        "for i in `seq 1 30`; do
+          mongo mongo/rocketchat --eval \"
+            rs.initiate({
+              _id: 'rs0',
+              members: [ { _id: 0, host: 'localhost:27017' } ]})\" &&
+          s=$$? && break || s=$$?;
+          echo \"Tried $$i times. Waiting 5 secs...\";
+          sleep 5;
+        done; (exit $$s)"
+    depends_on:
+      - mongo
+
+  #traefik:
+  #  image: traefik:latest
+  #  restart: unless-stopped
+  #  command: >
+  #    traefik
+  #     --docker
+  #     --acme=true
+  #     --acme.domains='your.domain.tld'
+  #     --acme.email='your@email.tld'
+  #     --acme.entrypoint=https
+  #     --acme.storagefile=acme.json
+  #     --defaultentrypoints=http
+  #     --defaultentrypoints=https
+  #     --entryPoints='Name:http Address::80 Redirect.EntryPoint:https'
+  #     --entryPoints='Name:https Address::443 TLS.Certificates:'
+  #  ports:
+  #    - 80:80
+  #    - 443:443
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
