@@ -48,16 +48,21 @@ services:
     domainname: "rocket.chat"
     hostname: "ldap-server"
 
-  # phpldapadmin:
-  #   image: osixia/phpldapadmin:latest
-  #   container_name: phpldapadmin
-  #   environment:
-  #     PHPLDAPADMIN_LDAP_HOSTS: "openldap"
-  #     PHPLDAPADMIN_HTTPS: "false"
-  #   ports:
-  #     - "8080:80"
-  #   depends_on:
-  #     - openldap
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: phpldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - "8080:80"
+    depends_on:
+      - openldap
+    labels:
+      traefik.enable: true
+      traefik.http.routers.phpldapadmin.rule: Host(`ldap.bishopfox.rocket.chat`)
+      traefik.http.routers.phpldapadmin.entrypoints: websecure
+      traefik.http.routers.phpldapadmin.tls.certresolver: myresolver
 
   rocketchat:
     image: registry.rocket.chat/rocketchat/rocket.chat:latest
@@ -101,8 +106,11 @@ services:
     ports:
       - 3000:3000
     labels:
-      - "traefik.backend=rocketchat"
-      - "traefik.frontend.rule=Host: your.domain.tld"
+      traefik.enable: true
+      traefik.http.routers.rocketchat.rule: Host(`bishopfox.rocket.chat`)
+      traefik.http.routers.rocketchat.entrypoints: websecure
+      traefik.http.routers.rocketchat.tls.certresolver: myresolver
+      traefik.http.services.rocketchat.loadbalancer.server.port: 3000
 
   mongo:
     image: mongo:4.0
@@ -134,23 +142,25 @@ services:
     depends_on:
       - mongo
 
-  #traefik:
-  #  image: traefik:latest
-  #  restart: unless-stopped
-  #  command: >
-  #    traefik
-  #     --docker
-  #     --acme=true
-  #     --acme.domains='your.domain.tld'
-  #     --acme.email='your@email.tld'
-  #     --acme.entrypoint=https
-  #     --acme.storagefile=acme.json
-  #     --defaultentrypoints=http
-  #     --defaultentrypoints=https
-  #     --entryPoints='Name:http Address::80 Redirect.EntryPoint:https'
-  #     --entryPoints='Name:https Address::443 TLS.Certificates:'
-  #  ports:
-  #    - 80:80
-  #    - 443:443
-  #  volumes:
-  #    - /var/run/docker.sock:/var/run/docker.sock
+  traefik:
+    image: "traefik:v2.4"
+    container_name: "traefik"
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      #- "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=rodrigo.nascimento@rocket.chat"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
