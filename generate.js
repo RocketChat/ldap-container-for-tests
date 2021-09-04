@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-// dn: cn=${cn},ou=people,dc=rocket,dc=chat
+// dn: cn=${cn},ou=people,{{ LDAP_BASE_DN }}
 // objectClass: inetOrgPerson
 // cn: ${cn}
 // mail: ${cn}@rocket.chat
@@ -23,7 +23,7 @@ fs.writeFileSync('ldif/data.ldif', `
 # Both has the password 'password'
 #
 
-#dn: dc=rocket,dc=chat
+#dn: {{ LDAP_BASE_DN }}
 #objectClass: top
 #objectClass: dcObject
 #objectClass: organization
@@ -31,33 +31,33 @@ fs.writeFileSync('ldif/data.ldif', `
 #dc: RocketChat
 #description: RocketChat users
 
-#dn: cn=admin,dc=rocket,dc=chat
+#dn: cn=admin,{{ LDAP_BASE_DN }}
 #objectClass: simpleSecurityObject
 #objectClass: organizationalRole
 #cn: admin
 #description: LDAP administrator
 #userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: ou=people,dc=rocket,dc=chat
+dn: ou=people,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: people
 
-dn: ou=groups,dc=rocket,dc=chat
+dn: ou=groups,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: groups
 
-dn: cn=admins,ou=groups,dc=rocket,dc=chat
+dn: cn=admins,ou=groups,{{ LDAP_BASE_DN }}
 objectClass: groupOfNames
 cn: admins
 description: people with infrastructure admin access
-member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+member: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 
-dn: cn=all,ou=groups,dc=rocket,dc=chat
+dn: cn=all,ou=groups,{{ LDAP_BASE_DN }}
 objectClass: groupOfNames
 cn: all
-member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+member: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 
-dn: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+dn: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapadmin
 mail: kk@ldapadmin.org
@@ -65,7 +65,7 @@ givenName: LDAP Admin
 sn: Admin
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: cn=ldapuser,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser
 mail: ldapuser@rocket.chat
@@ -84,7 +84,7 @@ for (var index = 0; index < 10; index++) {
 
 	data += `
 
-dn: cn=${cn},ou=people,dc=rocket,dc=chat
+dn: cn=${cn},ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ${cn}
 mail: ${cn}@rocket.chat
@@ -94,9 +94,9 @@ userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ${uid}`;
 
 	if (data.length > 10000000) {
-		fs.appendFileSync('ldif/data.ldif', data);
+		fs.appendFileSync('ldif/99-data.ldif', data);
 		data = '';
 	}
 }
 
-fs.appendFileSync('ldif/data.ldif', data);
+fs.appendFileSync('ldif/99-data.ldif', data);

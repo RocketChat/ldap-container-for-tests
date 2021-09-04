@@ -6,41 +6,41 @@
 # Both has the password 'password'
 #
 
-#dn: dc=rocket,dc=chat
-#objectClass: top
-#objectClass: dcObject
-#objectClass: organization
-#o: RocketChat users
-#dc: RocketChat
-#description: RocketChat users
+# dn: {{ LDAP_BASE_DN }}
+# objectClass: top
+# objectClass: dcObject
+# objectClass: organization
+# o: RocketChat users
+# dc: RocketChat
+# description: RocketChat users
 
-#dn: cn=admin,dc=rocket,dc=chat
-#objectClass: simpleSecurityObject
-#objectClass: organizationalRole
-#cn: admin
-#description: LDAP administrator
-#userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
+# dn: cn=admin,{{ LDAP_BASE_DN }}
+# objectClass: simpleSecurityObject
+# objectClass: organizationalRole
+# cn: admin
+# description: LDAP administrator
+# userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: ou=people,dc=rocket,dc=chat
+dn: ou=people,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: people
 
-dn: ou=groups,dc=rocket,dc=chat
+dn: ou=groups,{{ LDAP_BASE_DN }}
 objectClass: organizationalUnit
 ou: groups
 
-dn: cn=admins,ou=groups,dc=rocket,dc=chat
+dn: cn=admins,ou=groups,{{ LDAP_BASE_DN }}
 objectClass: groupOfNames
 cn: admins
 description: people with infrastructure admin access
-member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+member: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 
-dn: cn=all,ou=groups,dc=rocket,dc=chat
+dn: cn=all,ou=groups,{{ LDAP_BASE_DN }}
 objectClass: groupOfNames
 cn: all
-member: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+member: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 
-dn: cn=ldapadmin,ou=people,dc=rocket,dc=chat
+dn: cn=ldapadmin,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapadmin
 mail: kk@ldapadmin.org
@@ -48,7 +48,7 @@ givenName: LDAP Admin
 sn: Admin
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
-dn: cn=ldapuser,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser
 mail: ldapuser@rocket.chat
@@ -57,7 +57,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 
 
-dn: cn=ldapuser-0,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-0,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-0
 mail: ldapuser-0@rocket.chat
@@ -66,7 +66,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-0
 
-dn: cn=ldapuser-1,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-1,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-1
 mail: ldapuser-1@rocket.chat
@@ -75,7 +75,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-1
 
-dn: cn=ldapuser-2,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-2,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-2
 mail: ldapuser-2@rocket.chat
@@ -84,7 +84,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-2
 
-dn: cn=ldapuser-3,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-3,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-3
 mail: ldapuser-3@rocket.chat
@@ -93,7 +93,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-3
 
-dn: cn=ldapuser-4,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-4,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-4
 mail: ldapuser-4@rocket.chat
@@ -102,7 +102,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-4
 
-dn: cn=ldapuser-5,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-5,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-5
 mail: ldapuser-5@rocket.chat
@@ -111,7 +111,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-5
 
-dn: cn=ldapuser-6,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-6,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-6
 mail: ldapuser-6@rocket.chat
@@ -120,7 +120,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-6
 
-dn: cn=ldapuser-7,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-7,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-7
 mail: ldapuser-7@rocket.chat
@@ -129,7 +129,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-7
 
-dn: cn=ldapuser-8,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-8,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-8
 mail: ldapuser-8@rocket.chat
@@ -138,7 +138,7 @@ sn: User
 userPassword: {SSHA}yI6cZwQadOA1e+/f+T+H3eCQQhRzYWx0
 uid: ldapuser-8
 
-dn: cn=ldapuser-9,ou=people,dc=rocket,dc=chat
+dn: cn=ldapuser-9,ou=people,{{ LDAP_BASE_DN }}
 objectClass: inetOrgPerson
 cn: ldapuser-9
 mail: ldapuser-9@rocket.chat

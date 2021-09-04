@@ -1,5 +1,5 @@
-dn: cn=DefaultPPolicy,ou=Policies,dc=rocket,dc=chat
-cn: DefaultPPolicy
+dn: cn=DefaultPPolicy,ou=Policies,{{ LDAP_BASE_DN }}
+cn: default
 objectClass: pwdPolicy
 objectClass: device
 objectClass: top

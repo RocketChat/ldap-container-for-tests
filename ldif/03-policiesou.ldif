@@ -1,4 +1,4 @@
-dn: ou=Policies,dc=rocket,dc=chat
+dn: ou=Policies,{{ LDAP_BASE_DN }}
 objectClass: top
 objectClass: organizationalUnit
 ou: Policies
