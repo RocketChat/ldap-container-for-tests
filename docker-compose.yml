@@ -83,6 +83,7 @@ services:
       MONGO_URL: mongodb://mongo:27017/rocketchat
       MONGO_OPLOG_URL: mongodb://mongo:27017/local
       MAIL_URL: smtp://smtp.email
+      OVERWRITE_SETTING_LDAP_Server_Type: '' # The option "Other" has as an empty key value therefore use empty string for type Other. 
       OVERWRITE_SETTING_LDAP_User_Search_Field: cn
       OVERWRITE_SETTING_LDAP_Sync_User_Avatar: 'false'
       OVERWRITE_SETTING_LDAP_Sync_User_Data_FieldMap: '{"givenName":"name", "Email":"email"}'
@@ -99,6 +100,7 @@ services:
       OVERWRITE_SETTING_Apps_Framework_enabled: 'false'
       OVERWRITE_SETTING_Statistics_reporting: 'false'
       OVERWRITE_SETTING_Show_Setup_Wizard: "completed"
+      OVERWRITE_SETTING_Accounts_TwoFactorAuthentication_Enabled: 'false'
       INITIAL_USER: '{ "_id": "adminrc", "services": { "password": { "bcrypt": "$$2b$$10$$RoP1OQxuwzYgtxmHny/95.WUKc1MVuUv8mlbhluEticaArarcqLWa" }, "email2fa": { "enabled": false }, "emails": [ { "address": "admin@rocket.chat.localhost", "verified": true } ] }, "type": "user", "active": true, "roles": [ "user", "admin" ], "name": "Admin", "username": "rc.admin" }'
     depends_on:
       - mongo
@@ -113,12 +115,12 @@ services:
       traefik.http.services.rocketchat.loadbalancer.server.port: 3000
 
   mongo:
-    image: mongo:4.0
+    image: mongo:5.0
     restart: unless-stopped
     volumes:
      - ./data/db:/data/db
      #- ./data/dump:/dump
-    command: mongod --smallfiles --oplogSize 128 --replSet rs0 --storageEngine=mmapv1
+    command: mongod --oplogSize 128 --replSet rs0 --storageEngine=wiredTiger
     ports:
       - 27018:27017
     labels:
@@ -127,14 +129,14 @@ services:
   # this container's job is just run the command to initialize the replica set.
   # it will run the command and remove himself (it will not stay running)
   mongo-init-replica:
-    image: mongo:4.0
+    image: mongo:5.0
     command: >
       bash -c
         "for i in `seq 1 30`; do
           mongo mongo/rocketchat --eval \"
             rs.initiate({
               _id: 'rs0',
-              members: [ { _id: 0, host: 'localhost:27017' } ]})\" &&
+              members: [ { _id: 0, host: 'mongo:27017' } ]})\" &&
           s=$$? && break || s=$$?;
           echo \"Tried $$i times. Waiting 5 secs...\";
           sleep 5;
